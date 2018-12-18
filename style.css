@@ -1,0 +1,32 @@
+* {margin: 0; padding: 0}
+
+input:focus, input:active {
+	outline: none;
+}
+
+form {
+	width: 380px;
+	height: 400px;
+	margin: 150px 150px;
+	text-align: center;
+}
+
+form input {
+	width: 380px;
+	margin: 10px;
+	line-height: 20px;
+	font-size: 20px;
+}
+
+form input[type='submit'] {
+	background-color: silver;
+	font-weight: bold;
+	width: 120px;
+	height: 40px;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+form input[type='submit']:hover {
+	background-color: rgba(0,0,0,0.4);
+}
