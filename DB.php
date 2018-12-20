@@ -5,8 +5,10 @@ require("config.php");
 
 class DB {
 	
-	private $_connection;
-	private static $_instance;
+	private $_connection = null;
+	private static $_instance = null;
+
+	private $_table = null;
 
 	/**
 	Private Contructor
@@ -47,14 +49,38 @@ class DB {
 		self::$_instance->__destruct();
 	}
 
+	public function table($tableName) {
+		$this->_table = $tableName;
+		return $this;
+	}
 
-	public static function insertData($obj) {
+
+	public function insertData($obj) {
 		$fields = implode(',',array_keys($obj->getData()));
 		$listMarks = array_map(function($val) { return '?'; }, array_keys($obj->getData()));
 		$marks = implode(',', $listMarks);
+		$type = str_repeat('s', count($obj->getData()));
+		$values = array_values($obj->getData());
 
 		$sql = "INSERT INTO ".$obj->getNameTable()."($fields) VALUES ($marks)";
-		echo $sql;
+		$stmt = $this->_connection->prepare($sql);
+		$stmt->bind_param($type, ...$values);
+		$stmt->execute();
+		echo 'Thanh cong';
+	}
+
+	public function getAll() {
+		$sql = "SELECT * FROM ".$this->_table;
+		$subject=mysqli_query($this->_connection,$sql);
+		$i=-1;
+
+		while($row = mysqli_fetch_array($subject))
+		{
+			$i++;
+			print_r($row);
+			echo '<br/>';
+
+		}
 	}
 
 }
