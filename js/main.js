@@ -2,35 +2,38 @@ var id=null;
 
 $(document).ready(function(){
 	loadData();
+	$('#btnUpdate').attr('disabled','disabled');
+	$('#btnDel').attr('disabled','disabled');
 	$('form input[type="submit"]').click(function(e){
 		e.preventDefault();
 		if ($(this).attr('name') == 'addUser') {
 			insertData();
-			refresh();
-			loadData();
 		} else if ($(this).attr('name') == 'updateUser') {
 			updateData();
-			refresh();
-			loadData();
 		} else if ($(this).attr('name') == 'delUser') {
-			console.log('del user');
+			if (confirm("Are you sure delete this user?")) {
+				delData();
+			}
 		};
+		refresh();
+		loadData();
 	});
 });
 
 
 function loadData() {
 	$.ajax({
-		url: 'load_all.php',
+		url: 'src/load_all.php',
 		dataType: 'json',
 		success: function(respone){
 			var stringData = '';
 			var len = respone.length;
-			stringData += '<thead><tr><th>Id</th><th>User</th><th>Full Name</th><th>Phone</th><th>Email</th><th>Date</th></tr></thead>';
+			stringData += '<thead><tr><th>Id</th><th>Password</th><th>User</th><th>Full Name</th><th>Phone</th><th>Email</th><th>Date</th></tr></thead>';
 			stringData += '<tbody>';
 			for (var i=0; i<len; i++) {
 				stringData += '<tr>';
 				stringData += '<td>' + respone[i].id + '</td>';
+				stringData += '<td>' + respone[i].password + '</td>';
 				stringData += '<td>' + respone[i].username + '</td>';
 				stringData += '<td>' + respone[i].fullname + '</td>';
 				stringData += '<td>' + respone[i].phone + '</td>';
@@ -40,13 +43,16 @@ function loadData() {
 			};
 			stringData += '</tbody>';
 			$('#tableData').html(stringData);
-			hideId();
+			hideCol();
 			$('#tableData tbody tr').click(function() {
 				id = $(this).find('td:first-child').text();
-				$('form input[name="username"]').val($(this).find('td:nth-child(2)').text());
-				$('form input[name="fullname"]').val($(this).find('td:nth-child(3)').text());
-				$('form input[name="phone"]').val($(this).find('td:nth-child(4)').text());
-				$('form input[name="email"]').val($(this).find('td:nth-child(5)').text());
+				$('form input[name="password"]').val($(this).find('td:nth-child(2)').text());
+				$('form input[name="username"]').val($(this).find('td:nth-child(3)').text());
+				$('form input[name="fullname"]').val($(this).find('td:nth-child(4)').text());
+				$('form input[name="phone"]').val($(this).find('td:nth-child(5)').text());
+				$('form input[name="email"]').val($(this).find('td:nth-child(6)').text());
+				$('#btnUpdate').removeAttr('disabled');
+				$('#btnDel').removeAttr('disabled');
 			});
 		},
 		error: function(e) {
@@ -58,7 +64,7 @@ function loadData() {
 
 function insertData() {
 	$.ajax({
-		url: 'insert.php',
+		url: 'src/insert.php',
 		method: 'POST',
 		data: {
 			addUser: true,
@@ -69,6 +75,9 @@ function insertData() {
 			email: $('form input[name="email"]').val()
 		},
 		success: function(respone){
+			$('#message').fadeIn();
+			$('#message').html(respone);
+			$('#message').fadeOut(10000);
 			console.log(respone);
 		},
 		error: function(e) {
@@ -80,7 +89,7 @@ function insertData() {
 
 function updateData() {
 	$.ajax({
-		url: 'update.php',
+		url: 'src/update.php',
 		method: 'POST',
 		data: {
 			updateUser: true,
@@ -92,6 +101,30 @@ function updateData() {
 			email: $('form input[name="email"]').val()
 		},
 		success: function(respone){
+			$('#message').fadeIn();
+			$('#message').html(respone);
+			$('#message').fadeOut(10000);
+			console.log(respone);
+		},
+		error: function(e) {
+			console.log(e);
+		},
+		async: false
+	})
+}
+
+function delData() {
+	$.ajax({
+		url: 'src/del.php',
+		method: 'POST',
+		data: {
+			delUser: true,
+			id: id
+		},
+		success: function(respone){
+			$('#message').fadeIn();
+			$('#message').html(respone);
+			$('#message').fadeOut(10000);
 			console.log(respone);
 		},
 		error: function(e) {
@@ -102,15 +135,19 @@ function updateData() {
 }
 
 function refresh() {
-	$('form input[name="username"]').val(''),
-	$('form input[name="password"]').val(''),
-	$('form input[name="repassword"]').val(''),
-	$('form input[name="fullname"]').val(''),
-	$('form input[name="phone"]').val(''),
-	$('form input[name="email"]').val('')
+	$('form input[name="username"]').val('');
+	$('form input[name="password"]').val('');
+	$('form input[name="repassword"]').val('');
+	$('form input[name="fullname"]').val('');
+	$('form input[name="phone"]').val('');
+	$('form input[name="email"]').val('');
+	$('#btnUpdate').attr('disabled','disabled');
+	$('#btnDel').attr('disabled','disabled');
 }
 
-function hideId() {
+function hideCol() {
 	$('#tableData tbody tr td:first-child').hide();
 	$('#tableData thead tr th:first-child').hide();
+	$('#tableData tbody tr td:nth-child(2)').hide();
+	$('#tableData thead tr th:nth-child(2)').hide();
 }

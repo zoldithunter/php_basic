@@ -59,9 +59,9 @@ class DB {
 		$stmt 	= $this->_connection->prepare($sql);
 		$stmt->bind_param($type, ...$values);
 		if ($stmt->execute()) {
-			echo 'Insert success';
+			echo '<i class="far fa-smile-wink"></i> Successfuly';
 		} else {
-			echo 'Can not insert : '.$stmt->error;
+			echo '<i class="far fa-tired"></i> Can not insert : '.$stmt->error;
 		}
 	}
 
@@ -83,14 +83,22 @@ class DB {
 		$stmt 	= $this->_connection->prepare($sql);
 		$stmt->bind_param($type, ...$values);
 		if ($stmt->execute()) {
-			echo 'Update success with id = '.$obj->getIDData();
+			echo '<i class="far fa-smile-wink"></i> Update success with id = '.$obj->getIDData();
 		} else {
-			echo 'Can not update : '.$stmt->error;
+			echo '<i class="far fa-tired"></i> Can not update : '.$stmt->error;
 		}
 	}
 
 	public function delById($obj) {
-		$sql = 'DELETE FROM '.$obj->getNameTable().' WHERE '.$obj->getIDKey().' = '.$obj->getIDData();
+		$sql = 'DELETE FROM '.$obj->getNameTable().' WHERE '.$obj->getIDKey().' = ?';
+		$stmt 	= $this->_connection->prepare($sql);
+		$stmt->bind_param('s', $obj->getIDData());
+
+		if ($stmt->execute()) {
+			echo '<i class="far fa-smile-wink"></i> Delete success with id = '.$obj->getIDData();
+		} else {
+			echo '<i class="far fa-tired"></i> Can not delete : '.$stmt->error;
+		}
 	}
 }
 ?>

@@ -4,7 +4,7 @@ require("loader.php");
 
 $db = DB::getInstance();
 
-if (input::has('updateUser')) {
+if (input::has('addUser')) {
 	
 	$data = new Table('user');
 	$data->__set('username',input::post('username'));
@@ -12,13 +12,11 @@ if (input::has('updateUser')) {
 	$data->__set('fullname',input::post('fullname'));
 	$data->__set('phone',input::post('phone'));
 	$data->__set('email',input::post('email'));
-	$data->setID('id', input::post('id'));
+	date_default_timezone_set('Asia/Kuala_Lumpur');
+	$data->__set('date',date('Y-m-d H:i:s', time()));
 
-	$db->updateById($data);
-}
-
-function is_ajax() {
-  return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+	$result = $db->insertData($data);
+	echo $result;
 }
 
 ?>
