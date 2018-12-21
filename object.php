@@ -3,8 +3,9 @@
 class Table {
 
 	private $_nameTable;
-	private $_data= array();
-  private $_id = null;
+	private $_data   = array();
+  private $_idKey  = null;
+  private $_idData = null;
 
 	public function __construct($nameTable) {
 		$this->_nameTable = $nameTable;
@@ -30,12 +31,17 @@ class Table {
   		return $this->_data;
   	}
 
-    public function setID($id) {
-      $this->_id = $id;
+    public function setID($key, $data) {
+      $this->_idKey   = $key;
+      $this->_idData  = $data;
     }
 
-    public function getID() {
-      return $this->_id;
+    public function getIDKey() {
+      return $this->_idKey;
+    }
+
+    public function getIDData() {
+      return $this->_idData;
     }
 }
 

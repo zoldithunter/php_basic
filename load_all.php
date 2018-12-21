@@ -4,7 +4,7 @@ require("loader.php");
 
 $db = DB::getInstance();
 
-$datas = $db->table('user')->getAll();
+$datas = $db->getAll(new Table('user'));
 
 if (is_ajax()) {
 	$rows = array();

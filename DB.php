@@ -8,8 +8,6 @@ class DB {
 	private $_connection = null;
 	private static $_instance = null;
 
-	private $_table = null;
-
 	/**
 	Private Contructor
 	**/
@@ -49,11 +47,6 @@ class DB {
 		self::$_instance->__destruct();
 	}
 
-	public function table($tableName) {
-		$this->_table = $tableName;
-		return $this;
-	}
-
 
 	public function insertData($obj) {
 		$fields 	= implode(',',array_keys($obj->getData()));
@@ -65,18 +58,39 @@ class DB {
 		$sql 	= "INSERT INTO ".$obj->getNameTable()."($fields) VALUES ($marks)";
 		$stmt 	= $this->_connection->prepare($sql);
 		$stmt->bind_param($type, ...$values);
-		$stmt->execute();
-		echo 'Insert success';
+		if ($stmt->execute()) {
+			echo 'Insert success';
+		} else {
+			echo 'Can not insert : '.$stmt->error;
+		}
 	}
 
-	public function getAll() {
-		$sql 		= "SELECT * FROM ".$this->_table;
+	public function getAll($obj) {
+		$sql 		= "SELECT * FROM ".$obj->getNameTable();
 		$subject	= mysqli_query($this->_connection,$sql);
 		return $subject;
 	}
 
 	public function updateById($obj) {
-		$sql  = 'UPDATE '.$this->_table.' SET ';
+		$fields 	= array_map(function($val) { return $val.'=?'; }, array_keys($obj->getData()));
+		$sqlSET	 	= implode(',', $fields);
+		
+		$type 		= str_repeat('s', count($obj->getData()));
+		$values 	= array_values($obj->getData());
+
+		$sql  = 'UPDATE '.$obj->getNameTable().' SET '.$sqlSET.' WHERE '.$obj->getIDKey().' = '.$obj->getIDData();
+
+		$stmt 	= $this->_connection->prepare($sql);
+		$stmt->bind_param($type, ...$values);
+		if ($stmt->execute()) {
+			echo 'Update success with id = '.$obj->getIDData();
+		} else {
+			echo 'Can not update : '.$stmt->error;
+		}
+	}
+
+	public function delById($obj) {
+		$sql = 'DELETE FROM '.$obj->getNameTable().' WHERE '.$obj->getIDKey().' = '.$obj->getIDData();
 	}
 }
 ?>
