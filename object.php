@@ -1,9 +1,10 @@
 <?php
 
-class Object {
+class Table {
 
 	private $_nameTable;
 	private $_data= array();
+  private $_id = null;
 
 	public function __construct($nameTable) {
 		$this->_nameTable = $nameTable;
@@ -28,6 +29,14 @@ class Object {
   	public function getData() {
   		return $this->_data;
   	}
+
+    public function setID($id) {
+      $this->_id = $id;
+    }
+
+    public function getID() {
+      return $this->_id;
+    }
 }
 
 
