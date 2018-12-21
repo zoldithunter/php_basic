@@ -5,8 +5,8 @@ require("loader.php");
 $db = DB::getInstance();
 
 if (input::has('addUser')) {
-
-	$data = new Object('user');
+	
+	$data = new Table('user');
 	$data->__set('username',input::post('username'));
 	$data->__set('password',input::post('password'));
 	$data->__set('fullname',input::post('fullname'));
@@ -14,6 +14,10 @@ if (input::has('addUser')) {
 	$data->__set('email',input::post('email'));
 
 	$db->insertData($data);
+}
+
+function is_ajax() {
+  return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
 }
 
 ?>
