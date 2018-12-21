@@ -56,34 +56,27 @@ class DB {
 
 
 	public function insertData($obj) {
-		$fields = implode(',',array_keys($obj->getData()));
-		$listMarks = array_map(function($val) { return '?'; }, array_keys($obj->getData()));
-		$marks = implode(',', $listMarks);
-		$type = str_repeat('s', count($obj->getData()));
-		$values = array_values($obj->getData());
+		$fields 	= implode(',',array_keys($obj->getData()));
+		$listMarks 	= array_map(function($val) { return '?'; }, array_keys($obj->getData()));
+		$marks 		= implode(',', $listMarks);
+		$type 		= str_repeat('s', count($obj->getData()));
+		$values 	= array_values($obj->getData());
 
-		$sql = "INSERT INTO ".$obj->getNameTable()."($fields) VALUES ($marks)";
-		$stmt = $this->_connection->prepare($sql);
+		$sql 	= "INSERT INTO ".$obj->getNameTable()."($fields) VALUES ($marks)";
+		$stmt 	= $this->_connection->prepare($sql);
 		$stmt->bind_param($type, ...$values);
 		$stmt->execute();
-		echo 'Thanh cong';
+		echo 'Insert success';
 	}
 
 	public function getAll() {
-		$sql = "SELECT * FROM ".$this->_table;
-		$subject=mysqli_query($this->_connection,$sql);
-		$i=-1;
-
-		while($row = mysqli_fetch_array($subject))
-		{
-			$i++;
-			print_r($row);
-			echo '<br/>';
-
-		}
+		$sql 		= "SELECT * FROM ".$this->_table;
+		$subject	= mysqli_query($this->_connection,$sql);
+		return $subject;
 	}
 
+	public function updateById($obj) {
+		$sql  = 'UPDATE '.$this->_table.' SET ';
+	}
 }
-
-
 ?>
